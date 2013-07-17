@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by hand like a sucker-->
+<TextureAtlas imagePath="FighterShip.png">
+    <SubTexture name="fighterShip0" x="0" y="0" width="64" height="63" frameX="0" frameY="0" frameWidth="64" frameHeight="63"/>
+    <SubTexture name="fighterShip1" x="64" y="0" width="64" height="63" frameX="0" frameY="0" frameWidth="64" frameHeight="63"/>
+    <SubTexture name="fighterShip2" x="128" y="0" width="64" height="63" frameX="0" frameY="0" frameWidth="64" frameHeight="63"/>
+    <SubTexture name="fighterShip3" x="192" y="0" width="64" height="63" frameX="0" frameY="0" frameWidth="64" frameHeight="63"/>
+    <SubTexture name="fighterShip4" x="258" y="0" width="64" height="63" frameX="0" frameY="0" frameWidth="64" frameHeight="63"/>
+    <SubTexture name="fighterShip5" x="322" y="0" width="64" height="63" frameX="0" frameY="0" frameWidth="64" frameHeight="63"/>
+    <SubTexture name="fighterShip6" x="386" y="0" width="64" height="63" frameX="0" frameY="0" frameWidth="64" frameHeight="63"/>
+</TextureAtlas>
