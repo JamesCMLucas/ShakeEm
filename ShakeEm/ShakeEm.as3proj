@@ -55,6 +55,8 @@
   <libraryPaths>
     <element path="lib\Gyroscope.ane" />
     <element path="lib\Gyroscope.swc" />
+    <element path="lib\android_magnetometer_extension.swc" />
+    <element path="lib\de.patrickkulling.air.mobile.extensions.magnetometer.ane" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>

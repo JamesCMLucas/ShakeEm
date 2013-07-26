@@ -9,9 +9,14 @@
 	<name>ShakeEm</name>
 	<description></description>
 	<copyright></copyright>
-	
+	<!--
 	<extensions>
 		<extensionID>com.adobe.gyroscope</extensionID>
+	</extensions>
+	-->
+	<extensions>
+		<extensionID>com.adobe.gyroscope</extensionID>
+		<extensionID>de.patrickkulling.air.mobile.extensions.magnetometer</extensionID>
 	</extensions>
 	
 	<android>

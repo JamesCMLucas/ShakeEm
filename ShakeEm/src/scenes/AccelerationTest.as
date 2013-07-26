@@ -1,6 +1,8 @@
 package scenes 
 {
 	import flash.system.Capabilities;
+	import linalg.Quaternion;
+	import linalg.Vector3;
 	
 	import ShakeEmLib.sensors.SmoothAccelerometer;
 	import ShakeEmLib.sensors.SmoothGyroscope;
@@ -27,7 +29,7 @@ package scenes
 	 * ...
 	 * @author James
 	 */
-	public class Box2DWithRotationTest extends Scene
+	public class AccelerationTest extends Scene
 	{
 		public var accV3Cache:b2Vec3;
 		public var acc:SmoothAccelerometer;
@@ -48,11 +50,24 @@ package scenes
 		public var bordersImage:Image;
 		public var currentAngle:Number = 0.0;
 		public var gravity:b2Vec2;
-		//public var arena:Sprite;
-		//public var boundary:cBoundary;
+		public var worldSprite:Sprite;
 		
-		public function Box2DWithRotationTest() 
+		public function AccelerationTest()
 		{
+			worldSprite = new Sprite();
+			//worldSprite.x = Constants.CenterX;
+			//worldSprite.y = Constants.CenterY;
+			worldSprite.pivotX = Constants.GameWidth / 2;
+			worldSprite.pivotY = Constants.GameHeight / 2;
+			
+			addChild(worldSprite);
+			
+			
+			//this.pivotX = Constants.GameWidth / 2;
+			//this.pivotY = Constants.GameHeight / 2;
+			//this.x = Constants.GameWidth;
+			//this.y = Constants.GameHeight;
+			
 			gravity = new b2Vec2();
 			accV3Cache = new b2Vec3();
 			
@@ -85,8 +100,8 @@ package scenes
 			bordersImage.pivotY = bordersImage.height / 2;
 			bordersImage.width = Constants.GameWidth;
 			bordersImage.height = Constants.GameHeight;
-			bordersImage.x = Constants.CenterX;
-			bordersImage.y = Constants.CenterY;
+			bordersImage.x = 0.0;// Constants.CenterX;
+			bordersImage.y = 0.0;//Constants.CenterY;
 			//boundary = new cBoundary(bordersImage);
 			//arena.addChild(boundary);
 			this.addChild(bordersImage);
@@ -100,9 +115,9 @@ package scenes
 			
 			// images of the asteroids
 			myShape1 = new Shape("Asteroid", "Blue", circlePixelSize, circlePixelSize, false);
-			addChild(myShape1);
+			worldSprite.addChild(myShape1);
 			myShape2 = new Shape("Asteroid", "Blue", circle2PixelSize, circle2PixelSize, false);
-			addChild(myShape2);
+			worldSprite.addChild(myShape2);
 			
 			
 			
@@ -111,6 +126,8 @@ package scenes
 			var circleBodyDef:b2BodyDef = new b2BodyDef();
 			var circleFixtureDef:b2FixtureDef = new b2FixtureDef();
 			circleBodyDef.type = b2Body.b2_dynamicBody;
+			circleBodyDef.angularDamping = 0.1;
+			circleBodyDef.linearDamping = 0.1;
 			circleBodyDef.position.Set(0, 0);
 			circleFixtureDef.shape = circleShape;
 			circleFixtureDef.friction = 0.02;
@@ -123,6 +140,8 @@ package scenes
 			// make the second circle body
 			circleShape = new b2CircleShape(circle2WorldRadius);
 			circleBodyDef = new b2BodyDef();
+			circleBodyDef.angularDamping = 0.1;
+			circleBodyDef.linearDamping = 0.1;
 			circleFixtureDef = new b2FixtureDef();
 			circleBodyDef.type = b2Body.b2_dynamicBody;
 			circleBodyDef.position.Set(worldHalfWidth*0.5, worldHalfHeight*0.5);
@@ -203,55 +222,26 @@ package scenes
 			var aX:Number = acc.smoothX;
 			var aY:Number = acc.smoothY;
 			var aZ:Number = acc.smoothZ;
-			var rotZ:Number = Math.atan2(aX, aY);
 			
+			var accDiff:b2Vec3 = new b2Vec3(aX, aY, aZ);
+			accDiff.Subtract(accV3Cache);
+			accV3Cache.Set(aX, aY, aZ);
+			
+			var rotZ:Number = Math.atan2(-aY, aX);
+			//var rotZ:Number = Math.atan2(aX, aY);
+			//trace("rotZ = " + rotZ);
 			// apply rotation
-			//var gX:Number = gyro.smoothX;
-			//var gY:Number = gyro.smoothY;
+			var gX:Number = gyro.smoothX;
+			var gY:Number = gyro.smoothY;
 			var gZ:Number = gyro.smoothZ;
+			
+			var gyroQuat:Quaternion = Quaternion.spawnEulerAngles(gY, gX, gZ);
+			var gyroAxis:Vector3 = gyroQuat.getAxis();
+			trace(gyroAxis.x + ", " + gyroAxis.y + ", " + gyroAxis.z);
 			
 			var filterCoeff:Number = 0.75;
 			//currentAngle = ( filterCoeff * (currentAngle + gZ * dt)) + ((1.0 - filterCoeff) * accRot);
-			var newAngle:Number = ( filterCoeff * (currentAngle + gZ * dt)) + ((1.0 - filterCoeff) * rotZ);
-			
-			var gravityConstant:Number = 9.81;
-			var gravityDirection:b2Vec2 = new b2Vec2(0.0, 1.0);
-			var rotMat:b2Mat22 = new b2Mat22();
-			rotMat.Set(newAngle);
-			currentAngle = newAngle;
-			
-			//var stepsForward:Number = 1.0;
-			//newAngle += gZ * stepsForward * dt;
-			//rotMat.Set(newAngle);
-			gravityDirection.MulM(rotMat);
-			
-			
-			var newGravity:b2Vec2 = new b2Vec2();
-			newGravity.SetV(gravityDirection);
-			var gravitySize:Number = Math.sqrt(aX * aX + aY * aY + aZ * aZ);// - Math.abs(aZ);
-			//var linAccSize:Number = 0.0;
-			if (gravitySize != 0.0)
-			{
-				gravitySize = Math.sqrt(aX * aX + aY * aY) / gravitySize;
-				//gravitySize = gravityConstant;
-				//linAccSize = gravitySize - gravityConstant;
-			}
-			
-			//var linearFactor:Number = Math.sqrt(aX * aX + aY * aY) / gravityConstant;
-			//newGravity.Multiply(linearFactor);
-			newGravity.Multiply(gravitySize*gravityConstant);
-			
-			
-			var alpha:Number = 0.8;
-			gravity.Multiply(alpha);
-			gravity.Add( new b2Vec2(newGravity.x * (1.0 - alpha), newGravity.y * (1.0 - alpha)) );
-			
-			var linearAcceleration:b2Vec2 = new b2Vec2(newGravity.x - gravity.x, newGravity.y - gravity.y);
-			gravity.SetV(newGravity);
-			
-			var linearVelocity:b2Vec2 = new b2Vec2();
-			linearVelocity.SetV(linearAcceleration);
-			linearVelocity.Multiply(timeStep);
+			var newAngle:Number = -( filterCoeff * (currentAngle + gZ * timeStep)) + ((1.0 - filterCoeff) * rotZ);
 			
 			var dpi:Number = Capabilities.screenDPI;
 			var scaleFactor:Number = Starling.contentScaleFactor;
@@ -260,38 +250,66 @@ package scenes
 			var metersHigh:Number = Starling.current.nativeStage.fullScreenHeight * scaleFactor * inchesToMeters / dpi;
 			var screenSize:b2Vec2 = new b2Vec2(metersWide, metersHigh);
 			var realWorldToBoxWorld:Number = (Constants.GameWidth * metersPerPixel / metersWide);
-			linearVelocity.Multiply(-realWorldToBoxWorld);
-			//trace("linearVelocity = ( " + linearVelocity.x + ", " + linearVelocity.y + " )");
-			//var beta:Number = 0.9;
-			//var pos:b2Vec2 = boundaryBody.GetPosition();
-			//linearVelocity.Multiply(beta);
-			//linearVelocity.Add( new b2Vec2( -pos.x * (1.0 - beta) / timeStep, -pos.y * (1.0 - beta) / timeStep) );
+			//linearVelocity.Multiply(-realWorldToBoxWorld);
 			
-			boundaryBody.SetLinearVelocity(linearVelocity);
+			//boundaryBody.SetLinearVelocity(linearVelocity);
 			
-			var aFactor:Number = 0.2;
-			var targetAngle:Number = boundaryBody.GetAngle();
-			var angularVel:Number = -(aFactor * gZ ) - ((1 - aFactor) * targetAngle / timeStep);
+			var aFactor:Number = 0.5;
+			var targetAngularVelocity:Number = (newAngle - boundaryBody.GetAngle()) / timeStep;
+			var angularVel:Number = -(aFactor * gZ ) + ((1 - aFactor) * targetAngularVelocity);
 			boundaryBody.SetAngularVelocity(angularVel);
 			
+			//bordersImage.rotation = newAngle;
+			//this.rotation = -newAngle;
+			var gravityConstant:Number = 9.81;
+			var g3D:Vector3 = new Vector3(aX, aY, aZ);
+			var g3DSize:Number = g3D.normalizeAndGetLength();
+			var excess:Number = g3DSize - 1.0;
+			var shitfuck:Number = 10.0;
+			
+			var shakeX:Number = -accDiff.x * realWorldToBoxWorld * shitfuck;// -((aX - g3D.x) / g3DSize) * realWorldToBoxWorld;
+			var shakeY:Number = -accDiff.y * realWorldToBoxWorld * shitfuck;//-((aY - g3D.y) / g3DSize) * realWorldToBoxWorld;
+			//trace(realWorldToBoxWorld);
+			var shake:b2Vec2 = new b2Vec2(shakeX, shakeY);
+			//trace("shake = " + shake.Length());
 			
 			///// BEGIN LINEAR SHIZ
 			
-			
+			//var gravityDirection:b2Vec2 = new b2Vec2(-g3D.x, -g3D.y);// 0.0, -1.0);
+			var rotMat:b2Mat22 = new b2Mat22();
+			rotMat.Set(newAngle);
+			//shake.MulTM(rotMat);
+			//gravityDirection.MulTM(rotMat);
+			//gravity.Set(0.0, -9.8);
+			if (g3DSize != 0.0)
+			{
+				gravity.Set((g3D.x / g3DSize), (g3D.y / g3DSize));
+				gravity.MulM(rotMat);
+				gravity.Multiply( -gravityConstant);
+				shake.MulM(rotMat);
+				//gravity.SetV(shake);
+				gravity.Add(shake);
+			}
 			// apply gravity
-			myShape1.mBody.ApplyForce(gravity, myShape1.mBody.GetPosition());
-			myShape2.mBody.ApplyForce(gravity, myShape2.mBody.GetPosition());
+			var force:b2Vec2 = gravity.Copy();
+			force.Multiply(myShape1.mBody.GetMass());
+			myShape1.mBody.ApplyForce(force, myShape1.mBody.GetPosition());
+			force.SetV(gravity);
+			force.Multiply(myShape2.mBody.GetMass());
+			myShape2.mBody.ApplyForce(force, myShape2.mBody.GetPosition());
 			
 			// step the world forward then clear the forces
 			world.Step(timeStep, velocityIterations, positionIterations);
 			//world.Step(timeStep, 1, 1);
 			world.ClearForces();
-			
+			//trace("newAngle = " + newAngle + ",  boundaryAngle = " + boundaryBody.GetAngle());
 			// set the border positions and rotation
-			bordersImage.x = Constants.CenterX + (boundaryBody.GetPosition().x * pixelsPerMeter);
-			bordersImage.y = Constants.CenterY + (boundaryBody.GetPosition().y * pixelsPerMeter);
-			bordersImage.rotation = boundaryBody.GetAngle();
-			
+			bordersImage.x = boundaryBody.GetPosition().x * pixelsPerMeter;
+			bordersImage.y = -(boundaryBody.GetPosition().y * pixelsPerMeter);
+			//bordersImage.rotation = -boundaryBody.GetAngle();
+			worldSprite.rotation = boundaryBody.GetAngle();// newAngle;// -bordersImage.rotation;// + Constants.Pi;
+			this.x = Constants.CenterX;
+			this.y = Constants.CenterY;
 			// set the bodies' positions and rotations
 			for (var b:b2Body = world.GetBodyList(); b; b = b.GetNext())
 			{
@@ -304,8 +322,8 @@ package scenes
 					var shape:Shape = b.GetUserData() as Shape;
 					
 					shape.x = Constants.CenterX + (b.GetPosition().x * pixelsPerMeter);
-					shape.y = Constants.CenterY + (b.GetPosition().y * pixelsPerMeter);
-					shape.rotation = b.GetAngle();
+					shape.y = Constants.CenterY - (b.GetPosition().y * pixelsPerMeter);
+					shape.rotation = -b.GetAngle();
 					shape.Update();
 				}
 			}

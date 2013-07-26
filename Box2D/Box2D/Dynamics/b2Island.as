@@ -231,7 +231,7 @@ public class b2Island
 		{
 			b = m_bodies[i];
 			
-			if (b.GetType() == b2Body.b2_staticBody)
+			if (b.GetType() == b2Body.b2_staticBody)  // change to != b2Body.b2_dynamicBody  ??
 				continue;
 				
 			// Check for large velocities.

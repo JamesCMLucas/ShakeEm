@@ -6,6 +6,8 @@ package
     
     import scenes.Scene;
 	import scenes.Box2DWithRotationTest;
+	import scenes.ThreeAxisOrientationTest;
+	import scenes.AccelerationTest;
 	
     import starling.core.Starling;
     import starling.display.BlendMode;
@@ -57,7 +59,9 @@ package
             mMainMenu.addChild(logo);
 			
 			var scenesToCreate:Array = [
-				["Box2D w Rotation Test", Box2DWithRotationTest]
+				["Box2D w Rotation Test", Box2DWithRotationTest],
+				["3 Axis Orientation Test", ThreeAxisOrientationTest],
+				["Acceleration Test", AccelerationTest]
 			];
 			
 			var buttonTexture:Texture = Assets.getTexture("ButtonBig");
