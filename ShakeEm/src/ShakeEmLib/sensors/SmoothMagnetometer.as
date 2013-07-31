@@ -29,7 +29,7 @@ package ShakeEmLib.sensors
 		 */
 		private function updateInternal(e:MagnetometerEvent):void
 		{
-			super.setCurrentValues(e.x, e.y, e.z);
+			super.setCurrentValues(e.x, e.z, e.y);
 		}
 		
 		/*! Changes the update interval for the magnetometer

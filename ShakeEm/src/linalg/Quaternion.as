@@ -209,11 +209,19 @@ package linalg
 			rq.multiplyQ(vq);
 			v.set(rq.x, rq.y, rq.z);
 		}
-		
+		/*! returns a rotation matrix */
+		public function getRotationMatrix():Matrix3x3
+		{
+			return new Matrix3x3(
+			w * w - 1 + 2 * x * x, x * y + w * z, x * z - w * y,
+			x * y - w * y, w * w - 1 + 2 * y * y, y * z + w * x,
+			x * z + w * y, y * z - w * x, w * w - 1 + 2 * z * z);
+		}
 		/*! returns the local x axis */
 		public function getLocalXAxis():Vector3
 		{
 			return new Vector3(1.0 - 2.0 * (y * y + z * z), 2.0 * (x * y + z * w), 2.0 * (x * z - y * w));
+			//return new Vector3(1.0 - 2.0 * (y * y + z * z), 2.0 * (x * y - z * w), 2.0 * (x * z + y * w));
 		}
 		
 		/*! returns the local y axis */
@@ -238,20 +246,20 @@ package linalg
 		}
 		
 		/*! returns a new quaternion from euler angles */
-		public static function spawnEulerAngles(yaw:Number, pitch:Number, roll:Number):Quaternion
+		public static function spawnEulerAngles(aboutYAxis:Number, aboutXAxis:Number, aboutZAxis:Number):Quaternion
 		{
-			var sinRoll:Number = Math.sin( roll * 0.5 );
-			var sinYaw:Number = Math.sin( yaw * 0.5 );
-			var sinPitch:Number = Math.sin( pitch * 0.5 );
-			var cosRoll:Number = Math.cos( roll * 0.5 );
-			var cosYaw:Number = Math.cos( yaw * 0.5 );
-			var cosPitch:Number = Math.cos( pitch * 0.5 );
+			var sinZ:Number = Math.sin( aboutZAxis * 0.5 );
+			var sinY:Number = Math.sin( aboutYAxis * 0.5 );
+			var sinX:Number = Math.sin( aboutXAxis * 0.5 );
+			var cosZ:Number = Math.cos( aboutZAxis * 0.5 );
+			var cosY:Number = Math.cos( aboutYAxis * 0.5 );
+			var cosX:Number = Math.cos( aboutXAxis * 0.5 );
 			
 			var q:Quaternion = new Quaternion();
-			q.x = cosYaw * sinPitch * cosRoll - sinYaw * cosPitch * sinRoll;
-			q.y = sinYaw * cosPitch * cosRoll + cosYaw * sinPitch * sinRoll;
-			q.z = cosYaw * cosPitch * sinRoll - sinYaw * sinPitch * cosRoll;
-			q.w = cosYaw * cosPitch * cosRoll + sinYaw * sinPitch * sinRoll;
+			q.x = cosY * sinX * cosZ - sinY * cosX * sinZ;
+			q.y = sinY * cosX * cosZ + cosY * sinX * sinZ;
+			q.z = cosY * cosX * sinZ - sinY * sinX * cosZ;
+			q.w = cosY * cosX * cosZ + sinY * sinX * sinZ;
 			return q;
 		}
 		/*! returns a new quaternion from a rotation matrix */
