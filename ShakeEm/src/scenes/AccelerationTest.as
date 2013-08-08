@@ -5,6 +5,9 @@ package scenes
 	import linalg.Quaternion;
 	import linalg.Vector3;
 	
+	import de.patrickkulling.air.mobile.extensions.orientation.Orientation;
+	import de.patrickkulling.air.mobile.extensions.orientation.event.*;
+	
 	import ShakeEmLib.sensors.SmoothMagnetometer;
 	import ShakeEmLib.sensors.SmoothAccelerometer;
 	import ShakeEmLib.sensors.SmoothGyroscope;
@@ -33,6 +36,12 @@ package scenes
 	 */
 	public class AccelerationTest extends Scene
 	{
+		private var orientation:Orientation;
+		private var o_azimuth:Number = 0.0;
+		private var o_roll:Number = 0.0;
+		private var o_pitch:Number = 0.0;
+		
+		
 		private var beta:Number = Math.sqrt(3.0 / 4.0) * Constants.Pi_Div_6;
 		private var zeta:Number = beta / 60;
 		private var b_x:Number = 1;
@@ -93,8 +102,11 @@ package scenes
 			acc = new SmoothAccelerometer(3);
 			// per-frame update
 			addEventListener(EnterFrameEvent.ENTER_FRAME, updateFrame);
+			//addEventListener(OrientationEvent.UPDATE, updateOrientation);
 			//addEventListener(EnterFrameEvent.ENTER_FRAME, updateFrameWithMag);
-			
+			orientation = new Orientation();
+			orientation.setRequestedUpdateInterval(0);
+			orientation.addEventListener(OrientationEvent.UPDATE, updateOrientation);
 			// world sizing
 			var worldHalfWidth:Number = Constants.GameWidth * metersPerPixel / 2;
 			var worldHalfHeight:Number = Constants.GameHeight * metersPerPixel / 2;
@@ -170,9 +182,6 @@ package scenes
 			
 			// make the bordering walls
 			
-			
-			
-			
 			// the body
 			// depth of the wall boundaries
 			var wallDepthInPixels:Number = 25;  // to match the image
@@ -227,6 +236,13 @@ package scenes
 			cy = -worldHalfHeight + hH;
 			wall.SetAsOrientedBox(hW, hH, new b2Vec2(cx, cy), 0.0 );
 			boundaryBody.CreateFixture(wallFixtureDef);
+		}
+		
+		public function updateOrientation(e:OrientationEvent):void
+		{
+			o_roll = e.roll;
+			o_azimuth = e.azimuth;
+			o_pitch = e.pitch;
 		}
 		
 		public function updateFrameWithMag(e:EnterFrameEvent):void
@@ -545,6 +561,13 @@ package scenes
 		public function updateFrame(e:EnterFrameEvent):void
 		{
 			var dt:Number = e.passedTime;
+			trace("roll = " + o_roll + "   pitch = " + o_pitch + "   azimuth = " + o_azimuth);
+		}
+		
+		/*
+		public function updateFrame(e:EnterFrameEvent):void
+		{
+			var dt:Number = e.passedTime;
 			
 			acc.updatePerFrame();
 			gyro.updatePerFrame();
@@ -572,8 +595,7 @@ package scenes
 			
 			var gyroQuat:Quaternion = Quaternion.spawnEulerAngles(gY, gX, gZ);
 			var gyroAxis:Vector3 = gyroQuat.getAxis();
-			trace("angle = " + gyroQuat.getAngle() + ",   axis (" + gyroAxis.length() + ") = " + "(" +gyroAxis.x + ", " + gyroAxis.y + ", " + gyroAxis.z + ")");
-			
+			//trace("angle = " + gyroQuat.getAngle() + ",   axis (" + gyroAxis.length() + ") = " + "(" +gyroAxis.x + ", " + gyroAxis.y + ", " + gyroAxis.z + ")");
 			
 			
 			
@@ -675,6 +697,7 @@ package scenes
 				}
 			}
 		}
+		*/
 	}
 
 }

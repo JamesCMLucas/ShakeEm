@@ -57,6 +57,10 @@
     <element path="lib\Gyroscope.swc" />
     <element path="lib\android_magnetometer_extension.swc" />
     <element path="lib\de.patrickkulling.air.mobile.extensions.magnetometer.ane" />
+    <element path="lib\android_orientation_extension.swc" />
+    <element path="lib\de.patrickkulling.air.mobile.extensions.orientation.ane" />
+    <element path="lib\android_gravity_extension.swc" />
+    <element path="lib\de.patrickkulling.air.mobile.extensions.gravity.ane" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>

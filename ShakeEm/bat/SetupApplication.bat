@@ -39,7 +39,7 @@ set DIST_PATH=dist
 set DIST_NAME=ShakeEm
 
 :: Debugging using a custom IP
-set DEBUG_IP=192.168.0.247
+set DEBUG_IP=192.168.0.17
 
 
 

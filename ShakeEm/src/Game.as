@@ -9,6 +9,7 @@ package
 	import scenes.ThreeAxisOrientationTest;
 	import scenes.AccelerationTest;
 	import scenes.FusionTest;
+	import scenes.KullingTest;
 	
     import starling.core.Starling;
     import starling.display.BlendMode;
@@ -60,6 +61,7 @@ package
             mMainMenu.addChild(logo);
 			
 			var scenesToCreate:Array = [
+				["Kull Test",KullingTest],
 				["Fusion Test", FusionTest],
 				["Box2D w Rotation Test", Box2DWithRotationTest],
 				["3 Axis Orientation Test", ThreeAxisOrientationTest],

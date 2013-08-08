@@ -43,3 +43,31 @@
 		</platform>
 	</platforms>
 </extension>
+
+<extension xmlns="http://ns.adobe.com/air/extension/2.5">
+	<id>de.patrickkulling.air.mobile.extensions.orientation</id>
+	<versionNumber>1</versionNumber>
+	<platforms>
+		<platform name="Android-ARM">
+			<applicationDeployment>
+				<nativeLibrary>orientation.jar</nativeLibrary>
+				<initializer>de.patrickkulling.air.mobile.extensions.orientation.OrientationExtension</initializer>
+				<finalizer>de.patrickkulling.air.mobile.extensions.orientation.OrientationExtension</finalizer>
+			</applicationDeployment>
+		</platform>
+	</platforms>
+</extension>
+
+<extension xmlns="http://ns.adobe.com/air/extension/2.5">
+	<id>de.patrickkulling.air.mobile.extensions.gravity</id>
+	<versionNumber>1</versionNumber>
+	<platforms>
+		<platform name="Android-ARM">
+			<applicationDeployment>
+				<nativeLibrary>gravity.jar</nativeLibrary>
+				<initializer>de.patrickkulling.air.mobile.extensions.gravity.GravityExtension</initializer>
+				<finalizer>de.patrickkulling.air.mobile.extensions.gravity.GravityExtension</finalizer>
+			</applicationDeployment>
+		</platform>
+	</platforms>
+</extension>

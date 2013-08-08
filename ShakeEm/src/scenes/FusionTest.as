@@ -93,7 +93,10 @@ package scenes
 			var gravity:Vector3 = zAxis.clone();
 			//gravity.multiply( -1.0);
 			var acceleration:Vector3 = new Vector3(aX, aY, aZ);
-			
+			//trace("gravity x = " + gravity.x + "   acc x = " + acceleration.x);
+			var xDiff:Number = gravity.x - acceleration.x;
+			trace("xDiff = " + xDiff);
+			//trace("size accel = " + acceleration.length() );
 			/*
 			function getLinearMultiple(n:Number,va:Number,vb:Number):Number
 			{
@@ -125,9 +128,9 @@ package scenes
 			}
 			*/
 			//trace("|a| = " + acceleration.length());
-			acceleration.subtractV(gravity);
+			//acceleration.subtractV(gravity);
 			//calmAccel(acceleration);
-			trace("acc size = " + acceleration.length());
+			//trace("acc size = " + acceleration.length());
 			//traceVec("acceleration", acceleration);
 			//trace( "aX = " + aX + "   zAxis.x = " + zAxis.x);
 			

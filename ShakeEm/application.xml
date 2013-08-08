@@ -17,6 +17,8 @@
 	<extensions>
 		<extensionID>com.adobe.gyroscope</extensionID>
 		<extensionID>de.patrickkulling.air.mobile.extensions.magnetometer</extensionID>
+		<extensionID>de.patrickkulling.air.mobile.extensions.orientation</extensionID>
+		<extensionID>de.patrickkulling.air.mobile.extensions.gravity</extensionID>
 	</extensions>
 	
 	<android>
